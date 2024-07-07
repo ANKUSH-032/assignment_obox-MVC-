@@ -1,0 +1,53 @@
+﻿@model core.mvc.Book.BookDto
+
+<form id="editBookForm">
+    <input type="hidden" name="Id" value="@Model.BookID" />
+    <div class="form-group">
+        <label for="Title">Title</label>
+        <input type="text" class="form-control" id="Title" name="Title" value="@Model.Title" />
+    </div>
+    <div class="form-group">
+        <label for="Author">Author</label>
+        <input type="text" class="form-control" id="Author" name="Author" value="@Model.Author" />
+    </div>
+    <div class="form-group">
+        <label for="Genre">Genre</label>
+        <input type="text" class="form-control" id="Genre" name="Genre" value="@Model.Genre" />
+    </div>
+    <div class="form-group">
+        <label for="PublishedDate">Published Date</label>
+        <input type="date" class="form-control" id="PublishedDate" name="PublishedDate" value="@Model.PublishedYear.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="form-group">
+        <label for="Quantity">Quantity</label>
+        <input type="number" class="form-control" id="Quantity" name="Quantity" value="@Model.Quantity" />
+    </div>
+    <button class="btn btn-primary">Save</button>
+</form>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('#editBookForm').submit(function (e) {
+                e.preventDefault(); 
+
+                $.ajax({
+                    url: '@Url.Action("Edit", "Book")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            $('#modalContainer').modal('hide');
+                            location.reload();
+                        } else {
+                            $('#modalContainer .modal-body').html(data); 
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while processing your request.'); 
+                    }
+                });
+            });
+        });
+    </script>
+}

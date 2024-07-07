@@ -1,0 +1,38 @@
+﻿@model core.mvc.Book.BookDto
+
+<form id="deleteBookForm">
+    <input type="hidden" name="Id" value="@Model.BookID" />
+    <p>Are you sure you want to delete this book?</p>
+    <div><strong>Title:</strong> @Model.Title</div>
+    <div><strong>Author:</strong> @Model.Author</div>
+    <div><strong>Published Date:</strong> @Model.PublishedYear</div>
+    <button class="btn btn-danger" id="deleteButton">Delete</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</form>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('#deleteButton').click(function () {
+                var formData = $('#deleteBookForm').serialize();
+
+                $.ajax({
+                    url: '@Url.Action("DeleteConfirmed", "Book")',
+                    type: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        if (data.success) {
+                            $('#modalContainer').modal('hide');
+                            location.reload(); 
+                        } else {
+                            $('#modalContainer .modal-body').html(data); 
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while processing your request.'); 
+                    }
+                });
+            });
+        });
+    </script>
+}

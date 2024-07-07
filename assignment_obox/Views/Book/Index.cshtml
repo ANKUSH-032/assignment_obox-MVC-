@@ -1,0 +1,82 @@
+﻿@model IEnumerable<core.mvc.Book.Book>
+
+@{
+    ViewBag.Title = "Books";
+}
+
+<h2>Books</h2>
+
+<button id="createBookButton" class="btn btn-primary">Create New Book</button>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Published Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="booksTableBody">
+        @foreach (var book in Model)
+        {
+            <tr>
+                <td>@book.Title</td>
+                <td>@book.Author</td>
+                <td>@book.PublishedYear</td>
+                <td>
+                    <button class="btn btn-secondary editBookButton" data-id="@book.Id">Edit</button>
+                    <button class="btn btn-danger deleteBookButton" data-id="@book.Id">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="modalContainer" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#createBookButton').click(function () {
+                $.get('@Url.Action("Create", "Book")', function (data) {
+                    $('#modalContainer .modal-title').text('Create Book');
+                    $('#modalContainer .modal-body').html(data);
+                    $('#modalContainer').modal('show');
+                });
+            });
+
+            $('#booksTableBody').on('click', '.editBookButton', function () {
+                var id = $(this).data('id');
+                $.get('@Url.Action("Edit", "Book")/' + id, function (data) {
+                    $('#modalContainer .modal-title').text('Edit Book');
+                    $('#modalContainer .modal-body').html(data);
+                    $('#modalContainer').modal('show');
+                });
+            });
+
+            $('#booksTableBody').on('click', '.deleteBookButton', function () {
+                var id = $(this).data('id');
+                $.get('@Url.Action("Delete", "Book")/' + id, function (data) {
+                    $('#modalContainer .modal-title').text('Delete Book');
+                    $('#modalContainer .modal-body').html(data);
+                    $('#modalContainer').modal('show');
+                });
+            });
+        });
+    </script>
+}
